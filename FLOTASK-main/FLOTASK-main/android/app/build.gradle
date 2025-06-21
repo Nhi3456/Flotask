@@ -1,0 +1,72 @@
+plugins {
+    id "com.android.application"
+    //START: FlutterFire Configuration
+    id 'com.google.gms.google-services' //For Firebase configuration
+    //END: FlutterFire Configuration
+    id "kotlin-android"
+    id "dev.flutter.flutter-gradle-plugin"
+}
+
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader('UTF-8') { reader ->
+        localProperties.load(reader)
+    }
+}
+
+def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
+if (flutterVersionCode == null) {
+    flutterVersionCode = '1'
+}
+
+def flutterVersionName = localProperties.getProperty('flutter.versionName')
+if (flutterVersionName == null) {
+    flutterVersionName = '1.0'
+}
+
+android {
+    namespace "com.example.flotask"
+    compileSdk 34
+    ndkVersion "25.1.8937393" // Explicitly set the NDK version
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = '17' //Upgrade Kotlin to use JVM target 17
+    }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+
+    defaultConfig {
+        applicationId "com.example.flotask"
+        minSdkVersion 23
+        targetSdkVersion 34 //Match this with compileSdkVersion
+        versionCode flutterVersionCode.toInteger()
+        versionName flutterVersionName
+        multiDexEnabled true //Enable MultiDex for compatibility with older devices
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.debug //Change to release signingConfig if available
+            minifyEnabled false
+            shrinkResources false
+        }
+    }
+}
+
+flutter {
+    source '../..'
+}
+
+dependencies {
+    implementation 'androidx.multidex:multidex:2.0.1' //For MultiDex support
+    implementation 'com.google.android.gms:play-services-maps:18.1.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.9.0" //Ensure Kotlin compatibility
+}
